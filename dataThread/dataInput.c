@@ -85,11 +85,11 @@ void *inputThread(void *buffers) {
 		}
 		// daisy chain all servers to pass on message to node network
 		/*
-		if (strlen(serverBuffer) > 0) {
+		if (strlen(s) > 0) {
 			if (c != 0 && runningClient) {
-				write(c->sock, serverBuffer, strlen(serverBuffer));
+				write(c->sock, s, strlen(serverBuffer));
 			}
-			memset(serverBuffer, 0, sizeof(serverBuffer));
+			memset(s, 0, sizeof(serverBuffer));
 		}
 		if (strlen(clientBuffer) > 0) {
 			if (s != 0 && runningServer) {

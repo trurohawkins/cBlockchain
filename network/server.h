@@ -23,7 +23,8 @@ typedef struct Server {
 } Server;
 extern void *welcomeMessage;
 extern int welcomeSize;
-extern char *serverBuffer;
+extern char *serverInpBuff;
+extern char *serverDaisyBuff;
 extern bool runningServer;
 extern Server *s;
 
@@ -32,4 +33,5 @@ void freeServer(Server *s);
 void closeServer(Server *s);
 Server *setUpServerConnection();
 int serverSendReceive(Server *s, void *buffer);
+void serverSendAll(Server *s, void *buffer, int bytes);
 void *runServer(void*);

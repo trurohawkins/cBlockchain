@@ -1,6 +1,7 @@
 #include "client.h"
 
-char *clientBuffer;
+char *clientInpBuff;
+char *clientDaisyBuff;
 bool runningClient = false;
 Client *c;
 
@@ -81,8 +82,8 @@ void *runClient(void *ip) {
 				}
 				*/
 			} else if (val > 0) {
-				printf("fudge %s\n", buffer);
-				memcpy(clientBuffer, buffer, val);
+				printf("%i, fudge %s\n",val, buffer);
+				memcpy(clientDaisyBuff, buffer, val);
 				memset(buffer, 0, BUFF);
 			}
 		}

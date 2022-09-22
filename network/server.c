@@ -1,7 +1,8 @@
 #include "server.h"
 void *welcomeMessage;
 int welcomeSize;
-char *serverBuffer;
+char *serverInpBuff;
+char *serverDaisyBuff;
 bool runningServer = false;
 Server *s;
 
@@ -139,6 +140,7 @@ int serverSendReceive(Server *s, void *buffer) {
 				s->clientSocks[i] = 0;
 				printf("lost connection to socket #%d\n", i);
 			} else {
+				printf("got data\n");
 				gotData = valread;
 				for (int j = 1; j < s->maxClients; j++) {
 					int cur = s->clientSocks[(i + j) % s->maxClients];
@@ -152,6 +154,15 @@ int serverSendReceive(Server *s, void *buffer) {
 	return gotData;
 }
 
+void serverSendAll(Server *s, void *buffer, int bytes) {
+	for (int i = 0; i < s->maxClients; i++) {
+		int cur = s->clientSocks[i];
+		if (cur != 0) {
+			send(cur, buffer, bytes, 0);
+		}
+	}
+}
+
 void *runServer(void *n) {
 	s = setUpServerConnection();
 	runningServer = s > 0;
@@ -160,8 +171,8 @@ void *runServer(void *n) {
 		while (runningServer) {
 			int val = serverSendReceive(s, buffer); 
 			if (val != 0) {
-				printf("%s\n", buffer);
-				memcpy(serverBuffer, buffer, val);
+				printf("fudge %s\n", buffer);
+				memcpy(serverDaisyBuff, buffer, val);
 				memset(buffer, 0, BUFF);
 			}
 		}

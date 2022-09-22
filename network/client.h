@@ -13,7 +13,9 @@
 #define PORT 6969
 #define MAXCLIENTS 10
 #define BUFF 1024
-extern char *clientBuffer;
+
+extern char *clientInpBuff;
+extern char *clientDaisyBuff;
 extern bool runningClient;
 
 typedef struct Client {
