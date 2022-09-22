@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
 				*/
 				memset(clientInpBuff, 0, BUFF);//sizeof(inpBuffer));
 			}
-			if (!(int*)clientDaisyBuff != 0) {
+			if (*(int*)clientDaisyBuff != 0) {
 				if (s != 0 && runningServer) {
 					serverSendAll(s, clientDaisyBuff, BUFF); // strlen(clientBuffer));
 				}
