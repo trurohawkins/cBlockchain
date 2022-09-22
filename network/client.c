@@ -83,7 +83,7 @@ void *runClient(void *ip) {
 				*/
 			} else if (val > 0) {
 				printf("%i, fudge %s\n",val, buffer);
-				memcpy(clientDaisyBuff, buffer, val);
+				memcpy(clientDaisyBuff, buffer, BUFF);
 				memset(buffer, 0, BUFF);
 			}
 		}
