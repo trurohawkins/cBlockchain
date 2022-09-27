@@ -1,5 +1,8 @@
-#include<time.h>
+#include <time.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "prime.h"
 
 typedef struct Key {

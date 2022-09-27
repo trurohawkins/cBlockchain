@@ -1,6 +1,6 @@
+#include "rsaCrypt.h"
 #include "prime.c"
 #include "RSA.c"
-#include "rsaCrypt.h"
 
 NUM cryptItem(NUM data, NUM c, NUM n) {
 	return power(data, c, n);//modular_exponentiation(data, c, n);

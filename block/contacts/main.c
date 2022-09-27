@@ -1,11 +1,4 @@
-#include <stdbool.h>
-#include<stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "rsa/rsaCrypt.c"
-#include "rsa/transaction.c"
-#include "contactBook.c"
+#include "contactBook.h"
 
 int main(int argc, char **argv) {
 	initContacts();

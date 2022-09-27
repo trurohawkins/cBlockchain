@@ -1,16 +1,13 @@
-B = block/
-S = $(B)sha256/
-C = $(B)contacts/
+S = sha256/
+C = contacts/
 T = $(C)rsa/
 
-blockchain: main.c libBlock.a
-	gcc -o blockchain -g -Wall -w -pedantic main.c libBlock.a -lm
+block: main.c libBlock.a
+	gcc -o block -g -Wall -w -pedantic main.c libBlock.a -lm
 
-libBlock.a: transactionPool.o $(S)sha256.o $(B)block.o $(C)contactBook.o $(T)transaction.o $(T)rsa.o
+libBlock.a: sha256.o block.o $(C)contactBook.o $(T)transaction.o $(T)rsa.o
 	ar rs libBlock.a $^
 
-transactionPool.o: transactionPool.c transactionPool.h
-	gcc -c -g transactionPool.c
 
 block.o: block.c block.h
 	gcc -c -g block.c
@@ -29,17 +26,14 @@ sha256.o: $(S)sha256.c $(S)sha256.h
 
 clean:
 	rm *.o
-	rm vgcore*
 
 fclean:
 	rm *.o
-	$(MAKE) clean -C $(B)
 	$(MAKE) clean -C $(T)
 	$(MAKE) clean -C $(C)
 	rm *.a
-	rm blockchain
+	rm block
 	rm *.u
 	rm *.sav
 	rm vg*
-
 

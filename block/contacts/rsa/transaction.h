@@ -1,3 +1,5 @@
+#include "rsaCrypt.h"
+
 typedef struct Transaction {
 	Key sender;
 	Key recipient;

@@ -1,9 +1,8 @@
-#include <stdbool.h>
-#include<stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "rsaCrypt.c"
-#include "transaction.c"
+//#include <stdbool.h>
+//#include<stdio.h>
+//#include <stdlib.h>
+//#include <string.h>
+#include "transaction.h"
 
 int main(int argc, char* argv[]) {
 	//genPrimes(1000, 50000);

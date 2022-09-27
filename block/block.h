@@ -7,7 +7,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include "sha256/sha256pub.h"
-#include "netThread/dataThread/dataInput.h"
+#include "../netThread/dataThread/dataInput.h"
+#include "contacts/contactBook.h"
 
 typedef struct Block {
 	BYTE preHash[SHA256_BLOCK_SIZE];
@@ -57,4 +58,5 @@ void freeData(Data *d);
 Block *freeBlock(Block *b);
 void setGenesis(Block* b);
 Block *getGenesis();
+
 #endif

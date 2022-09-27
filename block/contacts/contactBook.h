@@ -1,3 +1,5 @@
+#include "rsa/transaction.h"
+
 typedef struct Contact {
 	char *name;
 	Key publicKey;
@@ -26,6 +28,7 @@ void saveUser(char *file, User *u);
 void freeUser(User *u);
 User *loadUser(char *file);
 Contact *getContact(User *u);
+Contact *makeContact(char *name, Key key);
 NUM *genTransaction(User *u, Contact *c, float amount);
 
 void *packContact(Contact *c);

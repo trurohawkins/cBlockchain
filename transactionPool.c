@@ -1,4 +1,4 @@
-#include "TransactionPool.h"
+#include "transactionPool.h"
 
 Pool *poolList;
 Pool *readyTransactions;
@@ -8,8 +8,8 @@ Blockchain *initBlockchain() {
 
 }
 
-bool verifyTransaction(NUM *t, Key *sender, Blockchain *poolChain) {
-	Transaction *trans = decryptTransaction(t, *sender);
+bool verifyTransaction(NUM *t, Key sender, Blockchain *poolChain) {
+	Transaction *trans = decryptTransaction(t, sender);
 	if (trans) {
 		//Contact *sender = findContact(conBook);
 		//Contact *recipient = findContact(trans->recipient, conBook);
@@ -253,7 +253,7 @@ void printPoolPack(Block *b) {
 			printTransaction(&(t[i]));
 		}
 	} else {
-		printf("\n");
+		printf("poo\n");
 	}
 	printf("proof: %i\n", b->proof);
 	printf("timestamp: %i\n", b->timestamp);

@@ -20,7 +20,6 @@ NUM *signTransaction(Key *sender, Key recipient, float amount) {
 
 Transaction *makeTransaction(Key *sender, Key *recipient, float amount) {
 	Transaction *t = (Transaction*)calloc(1, sizeof(Transaction));
-	// for initial source transaction
 	if (sender) {
 		t->sender = *sender;
 	}

@@ -48,6 +48,7 @@ User *loadUser(char *file) {
 	User *u = 0;
 	FILE *fptr = fopen(file, "rb");
 	if (fptr != NULL) {
+		printf("opened file %s\n", file);
 		int len = 0;
 		fread(&len, sizeof(int), 1, fptr);
 		int size = len + (sizeof(Key) * 2);// + sizeof(int);
@@ -107,12 +108,16 @@ Contact *unpackContact(void *buff) {
 	return c;
 }
 
-Contact *getContact(User *u) {
+Contact *makeContact(char *name, Key keys) {
 	Contact *c = (Contact*)calloc(1, sizeof(Contact));
-	int len = strlen(u->name) + 1;
+	int len = strlen(name) + 1;
 	c->name = (char*)calloc(len, sizeof(char));
-	memcpy(c->name, u->name, len);
-	c->publicKey = u->publicKey;
+	memcpy(c->name, name, len);
+	c->publicKey = keys;
+	return c;
+}
+Contact *getContact(User *u) {
+	Contact *c = makeContact(u->name, u->publicKey);//(Contact*)calloc(1, sizeof(Contact));
 	return c;
 }
 
@@ -151,7 +156,9 @@ bool addToContacts(Contact *c) {
 		}
 	}
 	*cur = (ContactPage*)calloc(1, sizeof(ContactPage));
-	(*cur)->data = c;
+	(*cur)->data = makeContact(c->name, c->publicKey);//calloc(1, sizeof(Contact));
+	//memcpy((*cur)->data, c, sizeof(Contact));
+	//*(*cur)->data = *c;
 	contacts->byteSize += contactLength(c);
 	if (pre && pre != cur) {
 		(*pre)->next = *cur;
@@ -162,6 +169,7 @@ bool addToContacts(Contact *c) {
 
 Contact *findContactName(char *name) {
 	int alph = charToIndex(*name);
+	//printf("searching for %s\n", name);
 	ContactPage *cur = contacts->book[alph];
 	while (cur) {
 		if (cur->data) {

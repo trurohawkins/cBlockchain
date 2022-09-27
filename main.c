@@ -1,35 +1,54 @@
-#include "block.c"
-#include "contacts/ContactBook.c"
+#include "transactionPool.h"
 
 int main() {
-	bool load = false;
-	Blockchain *chain = makeBlockchain();
+	srand(time(0));
+	initContacts();
+	User *u1 = loadUser("Crunch.u");
+	if (!u1) {
+		printf("generated crunch\n");
+		u1 = genUser("Crunch");
+		saveUser("Crunch.u", u1);
+	}
+	User *u2 = loadUser("Bono.u");
+	if (!u2) {
+		u2 = genUser("Bono");
+		saveUser("Bono.u", u2);
+	}
+	Contact *c1 = getContact(u1);
+	Contact *c2 = getContact(u2);
+
+	addToContacts(c1);
+	addToContacts(c2);
+	freeContact(c1);
+	freeContact(c2);
+
+	Blockchain *chain = loadChain("blockchain.sav");
+	if (!chain) {
+		chain = makeBlockchain();
+	}
 	Block *tamper;
-	if (!load) {
-		int chainSize = 5;
-		for (int i = 0; i < chainSize; i++) {
-			int *data = calloc(1, sizeof(int));
-			*data = i;
-			Data *d = makeData(data, sizeof(int));
-			Block *b = makeBlock(d, chain->cur);
-			addBlock(chain, b);
-			if (i == chainSize / 2) {
-				tamper = b;
-			}
+	int poolSize = 9;
+	for (int i = 0; i < poolSize; i++) {
+		NUM *c = genTransaction(u1, findContactName("Bono"), 0);
+		if (!verifyTransaction(c, u1->publicKey, chain)) {
+			printf("couldn't verify transaction\n");
+			return 1;
+		}
+		sleep(1);
+	}
+	printPool();
+	int chainSize = 3;
+	for (int i = 0; i < chainSize; i++) {
+		Block *b = packPool(chain, findContactName("Crunch"));
+		if (!addBlock(chain, b)) {
+			printf("couldn't add block\n");
+			return 1;
 		}
 	}
-	printChain(chain, printBlock);
-	printf("\n");
-	printf("is this chain valid? %s\n", validateChain(chain) ? "true" : "false");
-	saveChain("blockchain.sav", chain);
-	Data *d = tamper->data;
-	*((int*)(d->arr)) = 100;
-	printf("is this chain valid? %s\n", validateChain(chain) ? "true" : "false");
-	freeBlockchain(chain);
-	chain = loadChain("blockchain.sav");
-	printf("\n");	
-	printChain(chain, printBlock);
-	printf("\n");
-	freeBlockchain(chain);
+	printChain(chain, printPoolPack);
+	printf("accopunt balance of Crunch %f\n", accountBalance(u1->publicKey, chain));
+	if (validateChain(chain)) {
+		saveChain("blockchain.sav", chain);
+	}
 	return 0;
 }
