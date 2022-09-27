@@ -1,5 +1,3 @@
-#include "keyboardFunc.c"
-#include "threads.c"
 #include "dataInput.c"
 
 int main() {

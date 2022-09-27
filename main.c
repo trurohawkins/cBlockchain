@@ -5,7 +5,6 @@ int main() {
 	initContacts();
 	User *u1 = loadUser("Crunch.u");
 	if (!u1) {
-		printf("generated crunch\n");
 		u1 = genUser("Crunch");
 		saveUser("Crunch.u", u1);
 	}

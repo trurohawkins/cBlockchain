@@ -1,4 +1,4 @@
-#include"netThread.h" 
+#include "node.h" 
 
 void startNode(char *ip) {
 	serverInpBuff = (char*)calloc(sizeof(char), BUFF + 1);

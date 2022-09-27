@@ -70,6 +70,7 @@ int receiveData(Client *c, void *recBuff) {//int clientSock, struct timeval tv) 
 void *runClient(void *ip) {
 	c = connectAsClient(ip);
 	runningClient = c > 0;
+	clientDaisyBuff = (char *)calloc(sizeof(char), BUFF + 1);
 	if (runningClient) {
 		char *buffer = (char *)calloc(sizeof(char), BUFF + 1);
 		while(runningClient) {

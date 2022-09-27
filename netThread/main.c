@@ -1,9 +1,4 @@
-#include "dataThread/keyboardFunc.c"
-#include "dataThread/threads.c"
-#include "dataThread/dataInput.c"
-#include "network/client.c"
-#include "network/server.c"
-#include "netThread.c"
+#include "node.c"
 
 int main(int argc, char **argv) {
 	char *ip = 0;

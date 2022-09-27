@@ -1,4 +1,7 @@
 #define BUFF 1024
+#include "keyboardFunc.h"
+#include "threads.h"
+
 extern bool runningMainThread;
 
 typedef struct Data {
