@@ -22,6 +22,7 @@ typedef struct ContactBook {
 } ContactBook;
 
 extern ContactBook* contacts;
+extern User *mainUser;
 
 User *genUser(char *name);
 void saveUser(char *file, User *u);

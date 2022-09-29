@@ -25,7 +25,7 @@ fclean:
 	rm *.o
 	$(MAKE) clean -C $(T)
 	rm *.a
+	rm contactBook
 	rm *.u
 	rm *.sav
-	rm contactBook
 	rm vg*

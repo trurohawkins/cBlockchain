@@ -140,7 +140,7 @@ int serverSendReceive(Server *s, void *buffer) {
 				s->clientSocks[i] = 0;
 				printf("lost connection to socket #%d\n", i);
 			} else {
-				printf("got data\n");
+				//printf("got data\n");
 				gotData = valread;
 				for (int j = 1; j < s->maxClients; j++) {
 					int cur = s->clientSocks[(i + j) % s->maxClients];
@@ -171,7 +171,7 @@ void *runServer(void *n) {
 		while (runningServer) {
 			int val = serverSendReceive(s, buffer); 
 			if (val != 0) {
-				printf("fudge %s\n", buffer);
+				//printf("fudge %s\n", buffer);
 				memcpy(serverDaisyBuff, buffer, val);
 				memset(buffer, 0, BUFF);
 			}

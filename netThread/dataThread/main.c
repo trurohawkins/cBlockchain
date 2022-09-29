@@ -1,4 +1,4 @@
-#include "dataInput.c"
+#include "input.h"
 
 int main() {
 	int *poo = (int*)calloc(1, sizeof(int));

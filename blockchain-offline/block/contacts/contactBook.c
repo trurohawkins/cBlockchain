@@ -1,6 +1,7 @@
 #include "contactBook.h"
 
 ContactBook *contacts;
+User *mainUser;
 
 User *genUser(char *name) {
 	/*

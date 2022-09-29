@@ -1,5 +1,6 @@
 #include "block.h"
 
+Blockchain *myChain;
 Block *genesisBlock;
 
 Blockchain *makeBlockchain() {//void (*printFunc)(Block*)) {
@@ -274,7 +275,7 @@ void printChain(Blockchain *bc, void (*printBlock)(Block*)) {
 		cur = cur->next;
 	}
 }
-
+/*
 Data *makeData(void *arr, int bytes) {
 	Data *d = (Data*)calloc(1, sizeof(Data));
 	d->arr = arr;
@@ -282,11 +283,7 @@ Data *makeData(void *arr, int bytes) {
 	return d;
 }
 
-void freeData(Data *d) {
-	free(d->arr);
-	free(d);
-}
-
+*/
 Block *freeBlock(Block *b) {
 	if (b->data) {
 		freeData(b->data);

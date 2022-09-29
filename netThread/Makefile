@@ -4,14 +4,17 @@ D = dataThread/
 node: main.c libNetThread.a
 	gcc -o node -g -Wall -w -pedantic main.c libNetThread.a
 
-libNetThread.a:  node.o $(D)dataInput.o $(D)keyboardFunc.o $(D)threads.o	$(N)client.o $(N)server.o
+libNetThread.a:  node.o $(D)data.o $(D)input.o $(D)keyboardFunc.o $(D)threads.o	$(N)client.o $(N)server.o
 	ar rs libNetThread.a $^
 
 node.o: node.c node.h
 	gcc -c -g node.c
 
-dataInput.o: $(D)dataInput.c $(D)dataInput.h
-	gcc -c -g $(D)dataInput.c
+data.o: $(D)data.c $(D)data.h
+	gcc -c -g $(D)data.c
+
+input.o: $(D)input.c $(D)input.h
+	gcc -c -g $(D)input.c
 
 keyboardFunc.o: $(D)keyboardFunc.c $(D)keyboardFunc.h
 	gcc -c -g $(D)keyboardFunc.c

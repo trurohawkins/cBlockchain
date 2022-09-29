@@ -21,6 +21,7 @@ typedef struct Server {
 	struct sockaddr_in addr;
 	struct timeval tv;
 } Server;
+
 extern void *welcomeMessage;
 extern int welcomeSize;
 extern char *serverInpBuff;

@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "sha256/sha256pub.h"
-#include "../netThread/dataThread/dataInput.h"
+#include "../../netThread/dataThread/data.h"
 #include "contacts/contactBook.h"
 
 typedef struct Block {
@@ -25,7 +25,9 @@ typedef struct Blockchain {
 	//void (*print)(Block*);
 	int len;
 } Blockchain;
-//2 hashes(32 each) + 1 int (proof)
+
+extern Blockchain *myChain;
+
 #define BLOCKSIZE 68 
 
 Block *makeBlock(Data *d, Block *pre);

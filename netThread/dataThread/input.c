@@ -1,31 +1,6 @@
-#include "dataInput.h"
+#include "input.h"
 
 bool runningMainThread = false;
-
-Data *makeData(void *arr, int bytes) {
-	Data *d = (Data*)calloc(1, sizeof(Data));
-	d->arr = arr;
-	d->byteSize = bytes;
-	return d;
-}
-
-void *writeData(Data *d) {
-	void *buff = calloc(1, d->byteSize + sizeof(int));
-	memcpy(buff, &d->byteSize, sizeof(int));
-	memcpy(buff + sizeof(int), d->arr, d->byteSize);
-	return buff;
-}
-
-Data *readData(void *buffer) {
-	Data *d = (Data*)calloc(1, sizeof(Data));
-	memcpy(&d->byteSize, buffer, sizeof(int));
-	printf("rread data of size %i\n", d->byteSize);
-	d->arr = calloc(1, d->byteSize);
-	memcpy(d->arr, buffer + sizeof(int), d->byteSize);
-	return d;
-}
-
-
 int getInput(char *buffer, int letterCount) {
 	nonblock(1);
 	int i = 0;
@@ -64,9 +39,9 @@ int getInput(char *buffer, int letterCount) {
 void *inputThread(void *buffers) {
 	Data *buffs = readData(buffers);
 	int buffCount = buffs->byteSize / sizeof(void*);
-	printf("got %i buffs\n", buffCount);
+	//printf("got %i buffs\n", buffCount);
 	void **buffer = buffs->arr;
-	printf("i-buffer:%p\n", *buffer);
+	//printf("i-buffer:%p\n", *buffer);
 	char *inpBuffer = (char*)calloc(sizeof(char), BUFF + 1);
 	int letterCount = 0;
 	while(runningMainThread) {

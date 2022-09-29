@@ -1,8 +1,9 @@
-#include "transactionPool.h"
+#include "networkCommand.h"
 
-int main() {
+int main(int argc, char **argv) {
 	srand(time(0));
 	initContacts();
+	/*
 	User *u1 = loadUser("Crunch.u");
 	if (!u1) {
 		u1 = genUser("Crunch");
@@ -20,34 +21,33 @@ int main() {
 	addToContacts(c2);
 	freeContact(c1);
 	freeContact(c2);
+*/
+	myChain = loadChain("blockchain.sav");
+	if (!myChain) {
+		myChain = makeBlockchain();
+	}
+	char *ip = 0;
+	if (argc > 1) {
+		ip = argv[1];
+	}
+	/*
+	char *message = "Achknowledgement message, sent from server\n";
+	welcomeSize = strlen(message) + 3;
+	void *welcomeBuff = calloc(welcomeSize, sizeof(char));
+	memcpy(welcomeBuff, message, welcomeSize);
+	Data *d = makeData(welcomeBuff, welcomeSize);
+	welcomeMessage = writeData(d);
+	*/
 
-	Blockchain *chain = loadChain("blockchain.sav");
-	if (!chain) {
-		chain = makeBlockchain();
+	startNode(ip);
+	mainUser = loadUser("user.u");
+	if (!mainUser) {
+		timeToStart = false;
+		printf("no user.u found\nCreating new user please enter a name and press enter\n");
+	} else {
+		printf("welcome back %s\n\n", mainUser->name);
+		timeToStart = true;
+		
 	}
-	Block *tamper;
-	int poolSize = 9;
-	for (int i = 0; i < poolSize; i++) {
-		NUM *c = genTransaction(u1, findContactName("Bono"), 0);
-		if (!verifyTransaction(c, u1->publicKey, chain)) {
-			printf("couldn't verify transaction\n");
-			return 1;
-		}
-		sleep(1);
-	}
-	printPool();
-	int chainSize = 3;
-	for (int i = 0; i < chainSize; i++) {
-		Block *b = packPool(chain, findContactName("Crunch"));
-		if (!addBlock(chain, b)) {
-			printf("couldn't add block\n");
-			return 1;
-		}
-	}
-	printChain(chain, printPoolPack);
-	printf("accopunt balance of Crunch %f\n", accountBalance(u1->publicKey, chain));
-	if (validateChain(chain)) {
-		saveChain("blockchain.sav", chain);
-	}
-	return 0;
+	runNode(processBlockCommand, welcomeToBlockchain, parseCommand, ip);
 }
