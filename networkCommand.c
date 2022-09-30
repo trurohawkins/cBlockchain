@@ -18,7 +18,10 @@ Data *myContactMessage() {
 void welcomeToBlockchain() {
 	Data *welcomeData = myContactMessage();
 	welcomeSize = welcomeData->byteSize;
-	welcomeMessage = welcomeData->arr;
+	//welcomeMessage = welcomeData->arr;
+	welcomeMessage = calloc(1, welcomeData->byteSize);
+	memcpy(welcomeMessage, welcomeData->arr, welcomeSize);
+	freeData(welcomeData);
 	printHelp();
 }
 
@@ -143,9 +146,8 @@ Data *parseData(int mes, Data *d) {
 			printContact(c);
 			printf("\n");
 			reply = myContactMessage();
-		} else {
-			freeContact(c);
-		}
+		} 
+		freeContact(c);
 		freeData(d);
 		printf("\n");
 		return reply;
@@ -207,7 +209,9 @@ Data *chainLengthMessage(Blockchain *bc) {
 
 void parseCommand(char *dat, bool) {
 	Data *d = readData(dat);
-	char *str = d->arr;
+	char *str = (char*)calloc(strlen(d->arr) + 1, sizeof(char));
+	memcpy(str, d->arr, strlen(d->arr) + 1);
+	freeData(d);
 	printf("parsing %s\n", str);
 	if (!timeToStart) {
 		mainUser = genUser(str);
@@ -217,7 +221,9 @@ void parseCommand(char *dat, bool) {
 		printUser(mainUser);
 		Contact *c = getContact(mainUser);
 		addToContacts(c);
+		freeContact(c);
 		printContacts();
+		free(str);
 		return;
 	}
 	Data *mes = 0;
@@ -235,7 +241,10 @@ void parseCommand(char *dat, bool) {
 		printHelp();
 	} else if (str[0] == 'b' || str[0] == 'B') {
 		printf("account balance for %s is %f\n\n", mainUser->name, accountBalance(mainUser->publicKey, myChain));
+	} else if (str[0] == 'l' || str[0] == 'L') {
+		printContacts();
 	}
+	free(str);
 	if (mes) {
 		if (runningClient) {
 			write(c->sock, mes->arr, mes->byteSize);
@@ -332,6 +341,8 @@ void printHelp() {
 	printf("   prints out your blockchain\n");
 	printf("B -----\n");
 	printf("   prints out your account balance\n");
+	printf("L -----\n");
+	printf("	printd out contact list\n");
 	printf("H -----\n");
 	printf("   displays this help message again\n");
 	printf("--------------------------------\n\n");

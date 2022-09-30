@@ -12,7 +12,7 @@ D = $(P)dataThread/
 blockchain: main.c libBlock.a libNetThread.a
 	gcc -o blockchain -g -Wall -w -pedantic main.c libNetThread.a libBlock.a -lm
 
-libNetThread.a:  networkCommand.o $(P)node.o $(D)dataInput.o $(D)keyboardFunc.o $(D)threads.o	$(N)client.o $(N)server.o
+libNetThread.a:  networkCommand.o $(P)node.o $(D)data.o $(D)input.o $(D)keyboardFunc.o $(D)threads.o	$(N)client.o $(N)server.o
 	ar rs libNetThread.a $^
 
 networkCommand.o: networkCommand.c networkCommand.h
@@ -21,8 +21,11 @@ networkCommand.o: networkCommand.c networkCommand.h
 node.o: $(P)node.c $(P)node.h
 	gcc -c -g $(P)node.c
 
-dataInput.o: $(D)dataInput.c $(D)dataInput.h
-	gcc -c -g $(D)dataInput.c
+$(D)data.o: $(D)data.c $(D)data.h
+	$(MAKE) data.o -C $(D)
+
+$(D)input.o: $(D)input.c $(D)input.h
+	$(MAKE) input.o -C $(D)
 
 keyboardFunc.o: $(D)keyboardFunc.c $(D)keyboardFunc.h
 	gcc -c -g $(D)keyboardFunc.c
@@ -36,7 +39,7 @@ client.o: $(N)client.c $(N)client.h
 server.o: $(N)server.c $(N)server.h
 	gcc -c -g $(N)server.c
 
-libBlock.a: $(BC)transactionPool.o $(S)sha256.o $(B)block.o $(C)contactBook.o $(T)transaction.o $(T)rsa.o
+libBlock.a: $(BC)transactionPool.o sha256.o $(B)block.o $(C)contactBook.o $(T)transaction.o $(T)rsa.o
 	ar rs libBlock.a $^
 
 transactionPool.o: $(BC)transactionPool.c $(BC)transactionPool.h
@@ -63,7 +66,9 @@ clean:
 
 fclean:
 	rm *.o
+	$(MAKE) clean -C $(BC)
 	$(MAKE) clean -C $(B)
+	$(MAKE) clean -C $(N)
 	$(MAKE) clean -C $(T)
 	$(MAKE) clean -C $(P)
 	$(MAKE) clean -C $(C)

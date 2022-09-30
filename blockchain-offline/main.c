@@ -33,6 +33,8 @@ int main() {
 			printf("couldn't verify transaction\n");
 			return 1;
 		}
+		free(c);
+		//important so ttransactions arent identical
 		sleep(1);
 	}
 	printPool();
@@ -49,5 +51,9 @@ int main() {
 	if (validateChain(chain)) {
 		saveChain("blockchain.sav", chain);
 	}
+	freeUser(u1);
+	freeUser(u2);
+	freeContacts();
+	freeBlockchain(chain);
 	return 0;
 }

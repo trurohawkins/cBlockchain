@@ -45,6 +45,7 @@ int main() {
 	for (int i = 0; i < chainSize; i++) {
 		NUM *c = genTransaction(u1, findContactName("Bono"), i);
 		Transaction *t = decryptTransaction(c, u1->publicKey);
+		free(c);
 		Data *data = makeData(t, sizeof(Transaction));
 		/*
 		int *data = calloc(1, sizeof(int));
@@ -70,6 +71,9 @@ int main() {
 	printChain(chain, printTransBlock);
 	printf("is this chain valid? %s\n", validateChain(chain) ? "true" : "false");
 	printf("\n");
+	freeUser(u1);
+	freeUser(u2);
+	freeContacts();
 	freeBlockchain(chain);
 	return 0;
 }

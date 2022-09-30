@@ -28,6 +28,9 @@ client.o: $(N)client.c $(N)client.h
 server.o: $(N)server.c $(N)server.h
 	gcc -c -g $(N)server.c
 
+test:
+	valgrind --fair-sched=yes --leak-check=full --show-leak-kinds=all ./node
+
 clean: 
 	rm *.o
 

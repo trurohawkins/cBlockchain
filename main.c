@@ -50,4 +50,12 @@ int main(int argc, char **argv) {
 		
 	}
 	runNode(processBlockCommand, welcomeToBlockchain, parseCommand, ip);
+	free(welcomeMessage);
+	freeUser(mainUser);
+	freePools();
+	freeContacts();
+	if (validateChain(myChain)) {
+		saveChain("blockchain.sav", myChain);
+	}
+	freeBlockchain(myChain);
 }

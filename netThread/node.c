@@ -5,11 +5,12 @@ bool timeToStart = false;
 
 void startNode(char *ip) {
 	serverInpBuff = (char*)calloc(sizeof(char), BUFF + 1);
-	serverDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
+	//serverDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
 
 	//createThread(runServer, 0, PTHREAD_CREATE_DETACHED);
 	//clientInpBuff = (char*)calloc(sizeof(char), BUFF + 1);
-	clientDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
+	//clientDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
+	/*
 	int buffCount = 2;
 	if (ip != 0) { 
 		//createThread(runClient, (void*)ip, PTHREAD_CREATE_DETACHED);
@@ -25,7 +26,8 @@ void startNode(char *ip) {
 	}
 	Data *b = makeData(buffs, sizeof(void*) * buffCount);
 	void *buffbuff = writeData(b);
-	createThread(inputThread, buffbuff, PTHREAD_CREATE_DETACHED);
+	*/
+	createThread(inputThread, serverInpBuff, PTHREAD_CREATE_DETACHED);
 }
 
 void runNode(void (*processData)(void*, bool), void (*welcome)(void), void (*parse)(char*, bool), char *ip) {
@@ -73,9 +75,10 @@ void runNode(void (*processData)(void*, bool), void (*welcome)(void), void (*par
 			}
 		}
 	}
+	printf("main thead ended\n");
 	runningServer = false;
 	runningClient = false;
-	pthread_exit(0);
+	free(serverInpBuff);
 }
 
 void sendInput(char *buff, bool onServer) {
@@ -113,4 +116,5 @@ void welcomeText() {
 	memcpy(welcomeBuff, message, welcomeSize);
 	Data *d = makeData(welcomeBuff, welcomeSize);
 	welcomeMessage = writeData(d);
+	freeData(d);
 }

@@ -70,7 +70,7 @@ Server *setUpServerConnection() {
 		return 0;
 	}
 	s->addrlen = sizeof(s->addr);
-	printf("~~Server up and Running~~\n\n");
+	printf("~~Server up and Running~~\n");
 	return s;
 }
 
@@ -167,17 +167,19 @@ void *runServer(void *n) {
 	s = setUpServerConnection();
 	runningServer = s > 0;
 	if (runningServer) {
+		serverDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
 		char *buffer = (char *)calloc(sizeof(char), BUFF + 1);
 		while (runningServer) {
 			int val = serverSendReceive(s, buffer); 
 			if (val != 0) {
 				//printf("fudge %s\n", buffer);
-				memcpy(serverDaisyBuff, buffer, val);
+				memcpy(serverDaisyBuff, buffer, BUFF);
 				memset(buffer, 0, BUFF);
 			}
 		}
 		printf("server ended\n");
 		free(buffer);
+		free(serverDaisyBuff);
 		closeServer(s);
 	}
 

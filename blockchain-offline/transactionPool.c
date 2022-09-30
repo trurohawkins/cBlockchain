@@ -220,7 +220,7 @@ Block *packPool(Blockchain *bc, Contact *miner) {
 	if (!ready) {
 		ready = pop(&poolList);
 	}
-	if (!ready) {
+	if (!ready || ready->poolCount <= 0) {
 		return 0;
 	}
 	int count = ready->poolCount + 1;

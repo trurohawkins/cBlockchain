@@ -1,5 +1,5 @@
 data: main.c libInpThread.a
-	gcc -o data -Wall -w -pedantic main.c libInpThread.a
+	gcc -o data -g -Wall -w -pedantic main.c libInpThread.a
 
 libInpThread.a: keyboardFunc.o threads.o	data.o input.o
 	ar rs libInpThread.a $^
@@ -15,6 +15,9 @@ keyboardFunc.o: keyboardFunc.c keyboardFunc.h
 
 threads.o: threads.c threads.h
 	gcc -c -g threads.c
+
+test:
+	valgrind --fair-sched=yes --leak-check=full --show-leak-kinds=all ./data
 
 clean:
 	rm *.o

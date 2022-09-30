@@ -7,7 +7,7 @@ D = ../netThread/dataThread/
 blockchain: main.c libBlock.a
 	gcc -o blockchain -g -Wall -w -pedantic main.c libBlock.a -lm
 
-libBlock.a: transactionPool.o $(S)sha256.o $(B)block.o $(C)contactBook.o $(T)transaction.o $(T)rsa.o $(D)data.o
+libBlock.a: transactionPool.o sha256.o $(B)block.o $(C)contactBook.o $(T)transaction.o $(T)rsa.o $(D)data.o
 	ar rs libBlock.a $^
 
 transactionPool.o: transactionPool.c transactionPool.h
@@ -33,7 +33,6 @@ sha256.o: $(S)sha256.c $(S)sha256.h
 
 clean:
 	rm *.o
-	rm vgcore*
 
 fclean:
 	rm *.o

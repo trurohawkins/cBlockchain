@@ -7,6 +7,7 @@
 #include "data.h"
 
 extern bool runningMainThread;
+extern bool runningInputThread;
 
 int getInput(char *buffer, int letterCount);
 void *inputThread(void *buffers);

@@ -48,8 +48,7 @@ Client *connectAsClient(char *ip) {
 	return c;
 }
 
-int receiveData(Client *c, void *recBuff) {//int clientSock, struct timeval tv) {
-	//char recBuff[BUFF+1] = {'\0'};
+int receiveData(Client *c, void *recBuff) {
 	fd_set readfds;
 	int valread = 0;
 	FD_ZERO(&readfds);
@@ -60,7 +59,7 @@ int receiveData(Client *c, void *recBuff) {//int clientSock, struct timeval tv) 
 	}
 	if (FD_ISSET(c->sock, &readfds)) {
 		if ((valread = read(c->sock, recBuff, BUFF)) == 0) {
-			printf("no more server, gonna close now\n");
+			printf("no more server, gonna close client socket\n");
 			return -1;
 		}
 	}
@@ -70,26 +69,21 @@ int receiveData(Client *c, void *recBuff) {//int clientSock, struct timeval tv) 
 void *runClient(void *ip) {
 	c = connectAsClient(ip);
 	runningClient = c > 0;
-	clientDaisyBuff = (char *)calloc(sizeof(char), BUFF + 1);
 	if (runningClient) {
+		clientDaisyBuff = (char *)calloc(sizeof(char), BUFF + 1);
 		char *buffer = (char *)calloc(sizeof(char), BUFF + 1);
 		while(runningClient) {
 			int val = receiveData(c, buffer); 
 			if (val < 0) {
 				runningClient = false;
-				/*
-				if (!runningServer) {
-					runningMainThread = false;
-				}
-				*/
 			} else if (val > 0) {
-				//printf("%i, fudge %s\n",val, buffer);
 				memcpy(clientDaisyBuff, buffer, BUFF);
 				memset(buffer, 0, BUFF);
 			}
 		}
 		printf("client ended\n");
 		free(buffer);
+		free(clientDaisyBuff);
 		close(c->sock);
 		free(c);
 	}
