@@ -178,13 +178,13 @@ void *runServer(void *buff) {
 		while (runningServer) {
 			val = serverSendReceive(s, buffer, val); 
 			if (val != 0) {
-				if (pthread_mutex_trylock(lock) == 0) {
+				//if (pthread_mutex_trylock(lock) == 0) {
 					memcpy(buff, buffer, val);
-					pthread_mutex_unlock(lock);
+					//pthread_mutex_unlock(lock);
 
 					memset(buffer, 0, BUFF);
 					val = 0;
-				}
+				//}
 			}
 		}
 		printf("server ended\n");
