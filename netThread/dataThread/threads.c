@@ -1,6 +1,8 @@
 #include "threads.h"
 
-void createThread(void*(*func)(void*), void *data, int state) {
+//pthread_mutex_t *lock;
+
+pthread_t createThread(void*(*func)(void*), void *data, int state) {
 	pthread_t threadHandle;
 	// specifies properties of thread
 	pthread_attr_t attr;
@@ -17,6 +19,7 @@ void createThread(void*(*func)(void*), void *data, int state) {
 	//create fork point
 	pthread_create(&threadHandle, &attr, func, data);
 	pthread_attr_destroy(&attr);
+	return threadHandle;
 }
 
 void runFuncThread(void*(*func)(void*)) {

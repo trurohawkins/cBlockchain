@@ -15,12 +15,17 @@ void *writeData(Data *d) {
 }
 
 Data *readData(void *buffer) {
-	Data *d = (Data*)calloc(1, sizeof(Data));
-	memcpy(&d->byteSize, buffer, sizeof(int));
-	//printf("rread data of size %i\n", d->byteSize);
-	d->arr = calloc(1, d->byteSize);
-	memcpy(d->arr, buffer + sizeof(int), d->byteSize);
-	return d;
+	int *size = buffer;
+	if (*size < BUFF - sizeof(int) && size > 0) {
+		Data *d = (Data*)calloc(1, sizeof(Data));
+		memcpy(&d->byteSize, buffer, sizeof(int));
+		d->arr = calloc(1, d->byteSize);
+		memcpy(d->arr, buffer + sizeof(int), d->byteSize);
+		return d;
+	} else {
+		printf("bad read byte size: %i,should be > 0 &&  < %i\n", *size, BUFF - sizeof(int));
+		return 0;
+	}
 }
 
 void freeData(Data *d) {

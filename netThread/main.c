@@ -1,4 +1,4 @@
-#include "node.c"
+#include "node.h"
 
 int main(int argc, char **argv) {
 	char *ip = 0;
@@ -6,9 +6,9 @@ int main(int argc, char **argv) {
 		ip = argv[1];
 	}
 
-	startNode(ip);
+	//startNode(ip);
 	timeToStart = true;
 	runNode(processString, welcomeText, sendInput, ip);
-	free(welcomeMessage);
+	//free(welcomeMessage);
 	pthread_exit(0);
 }

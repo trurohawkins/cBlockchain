@@ -1,10 +1,8 @@
 #include "node.h" 
 
-bool networkStarted = false;
 bool timeToStart = false;
 
 void startNode(char *ip) {
-	serverInpBuff = (char*)calloc(sizeof(char), BUFF + 1);
 	//serverDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
 
 	//createThread(runServer, 0, PTHREAD_CREATE_DETACHED);
@@ -20,39 +18,50 @@ void startNode(char *ip) {
 	}
 	buffCount = 1;
 	void *buffs = calloc(sizeof(void*), buffCount);
-	memcpy(buffs, &serverInpBuff, sizeof(void*));
+	memcpy(buffs, &inputBuffer, sizeof(void*));
 	if (buffCount > 1) {
 		memcpy(buffs + sizeof(void*), &clientInpBuff, sizeof(void*));
 	}
 	Data *b = makeData(buffs, sizeof(void*) * buffCount);
 	void *buffbuff = writeData(b);
 	*/
-	createThread(inputThread, serverInpBuff, PTHREAD_CREATE_DETACHED);
 }
 
 void runNode(void (*processData)(void*, bool), void (*welcome)(void), void (*parse)(char*, bool), char *ip) {
 	runningMainThread = true;
+	void *inputBuffer = (char*)calloc(sizeof(char), BUFF + 1);
+	serverDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
+	clientDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
+	pthread_t handles[3] = {0,0,0};
+	
+	pthread_mutex_t *lock = calloc(sizeof(pthread_mutex_t), 1);
+	if (pthread_mutex_init(lock, NULL) != 0) {
+		printf("mutex initialization failed\n");
+		return 1;
+	}
+	memcpy(inputBuffer, &lock, sizeof(pthread_mutex_t));
+
+	handles[0] = createThread(inputThread, inputBuffer, PTHREAD_CREATE_DETACHED);
+	memset(inputBuffer, 0 , BUFF);
 	while (runningMainThread) {
-		if (timeToStart && !networkStarted) {
+		if (timeToStart && !(runningClient || runningServer)) {
 			welcome();
-			createThread(runServer, 0, PTHREAD_CREATE_DETACHED);
-			if (ip) {
-				createThread(runClient, (void*)ip, PTHREAD_CREATE_DETACHED);
+			if (handles[1] == 0) {
+				handles[1] = createThread(runServer, 0, PTHREAD_CREATE_DETACHED);
 			}
-			networkStarted = true;
+			if (handles[2] == 0) {
+				if (ip) {
+					printf("go ip\n");
+					handles[2] = createThread(runClient, (void*)ip, PTHREAD_CREATE_DETACHED);
+				}
+			}
 		} else {
 			// buffer from input thread
-			if (*(int*)serverInpBuff != 0) {
-				parse(serverInpBuff, true);
-				memset(serverInpBuff, 0, BUFF);//sizeof(inpBuffer));
+			if (*(int*)inputBuffer != 0) {
+				parse(inputBuffer, true);
+				memset(inputBuffer, 0, BUFF);//sizeof(inpBuffer));
 			}
 			if (runningServer) {
-				/*
-				if (*(int*)serverInpBuff != 0) {
-					parse(serverInpBuff, true);
-					memset(serverInpBuff, 0, BUFF);//sizeof(inpBuffer));
-				}
-				*/
 				if (*(int*) serverDaisyBuff != 0) {
 					//unpack data
 					processData(serverDaisyBuff, true);
@@ -60,12 +69,6 @@ void runNode(void (*processData)(void*, bool), void (*welcome)(void), void (*par
 				}
 			}
 			if (runningClient) {
-				/*
-				if (*(int*)clientInpBuff != 0) {
-					parse(clientInpBuff, false);
-					memset(clientInpBuff, 0, BUFF);//sizeof(inpBuffer));
-				}
-				*/
 				// received from connected server
 				if (*(int*)clientDaisyBuff != 0) {
 					//uunpack data
@@ -73,12 +76,20 @@ void runNode(void (*processData)(void*, bool), void (*welcome)(void), void (*par
 					memset(clientDaisyBuff, 0, BUFF);
 				}
 			}
+			if (!runningClient && !runningServer) {
+				runningMainThread = false;
+			}
 		}
 	}
-	printf("main thead ended\n");
+	printf("main thead ended %i\n", runningServer);
 	runningServer = false;
 	runningClient = false;
-	free(serverInpBuff);
+	for (int i = 0; i < 3; i++) {
+		if (handles[i] != 0) {
+			pthread_join(handles[i], 0);
+		}
+	}
+	free(inputBuffer);
 }
 
 void sendInput(char *buff, bool onServer) {

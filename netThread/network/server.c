@@ -4,6 +4,7 @@ int welcomeSize;
 char *serverInpBuff;
 char *serverDaisyBuff;
 bool runningServer = false;
+
 Server *s;
 
 Server *makeServer(int maxClients) {
@@ -76,7 +77,7 @@ Server *setUpServerConnection() {
 
 int serverSendReceive(Server *s, void *buffer) {
 	//printf("----server----\n");
-	int clientSock, maxSd, sd, activity, gotData = 0, valread = 0;
+	int clientSock, sd, activity, gotData = 0, valread = 0;
 	fd_set readfds, writefds;
 	//char buffer [BUFF+1];
 	//clear the socket set
@@ -85,7 +86,7 @@ int serverSendReceive(Server *s, void *buffer) {
 
 	//add master socket to the set
 	FD_SET(s->sock, &readfds);
-	maxSd = s->sock;
+	int maxSd = s->sock;
 	//add child sockets to the set
 	for (int i = 0; i < s->maxClients; i++) {
 		sd = s->clientSocks[i];
@@ -99,7 +100,6 @@ int serverSendReceive(Server *s, void *buffer) {
 			maxSd = sd;
 		}
 	}
-
 	//wait for activity on one of the sockets
 	activity = select(maxSd + 1, &readfds, NULL, NULL, &(s->tv));
 

@@ -54,9 +54,11 @@ int receiveData(Client *c, void *recBuff) {
 	FD_ZERO(&readfds);
 	FD_SET(c->sock, &readfds);
 	select(c->sock + 1, &readfds, NULL, NULL, &(c->tv));
+	/*
 	if (strlen(recBuff) > 0) {
 		printf("I am receiving data to %s\n", recBuff);
 	}
+	*/
 	if (FD_ISSET(c->sock, &readfds)) {
 		if ((valread = read(c->sock, recBuff, BUFF)) == 0) {
 			printf("no more server, gonna close client socket\n");
@@ -81,7 +83,6 @@ void *runClient(void *ip) {
 				memset(buffer, 0, BUFF);
 			}
 		}
-		printf("client ended\n");
 		free(buffer);
 		free(clientDaisyBuff);
 		close(c->sock);
