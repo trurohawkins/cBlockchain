@@ -33,6 +33,6 @@ Server *makeServer(int maxClients);
 void freeServer(Server *s);
 void closeServer(Server *s);
 Server *setUpServerConnection();
-int serverSendReceive(Server *s, void *buffer);
+int serverSendReceive(Server *s, void *buffer, int gotData);
 void serverSendAll(Server *s, void *buffer, int bytes);
 void *runServer(void*);

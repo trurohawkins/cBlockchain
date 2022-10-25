@@ -75,9 +75,9 @@ Server *setUpServerConnection() {
 	return s;
 }
 
-int serverSendReceive(Server *s, void *buffer) {
+int serverSendReceive(Server *s, void *buffer, int gotData) {
 	//printf("----server----\n");
-	int clientSock, sd, activity, gotData = 0, valread = 0;
+	int clientSock, sd, activity, valread = 0;
 	fd_set readfds, writefds;
 	//char buffer [BUFF+1];
 	//clear the socket set
@@ -130,22 +130,24 @@ int serverSendReceive(Server *s, void *buffer) {
 			}
 		}
 	}
-	//else its some IO operations on some other sockets
-	for (int i = 0; i < s->maxClients; i++) {
-		sd = s->clientSocks[i];
-		if (FD_ISSET(sd, &readfds)) { // if send receive on client socket
-			//Check if it was for closing, and also read the incoming message
-			if ((valread = read(sd, buffer, BUFF)) == 0) {
-				close(sd);
-				s->clientSocks[i] = 0;
-				printf("lost connection to socket #%d\n", i);
-			} else {
-				//printf("got data\n");
-				gotData = valread;
-				for (int j = 1; j < s->maxClients; j++) {
-					int cur = s->clientSocks[(i + j) % s->maxClients];
-					if (cur != 0) {
-						send(cur, buffer, valread, 0);
+	if (gotData == 0) {
+		//else its some IO operations on some other sockets
+		for (int i = 0; i < s->maxClients; i++) {
+			sd = s->clientSocks[i];
+			if (FD_ISSET(sd, &readfds)) { // if send receive on client socket
+				//Check if it was for closing, and also read the incoming message
+				if ((valread = read(sd, buffer, BUFF)) == 0) {
+					close(sd);
+					s->clientSocks[i] = 0;
+					printf("lost connection to socket #%d\n", i);
+				} else {
+					//printf("got data\n");
+					gotData = valread;
+					for (int j = 1; j < s->maxClients; j++) {
+						int cur = s->clientSocks[(i + j) % s->maxClients];
+						if (cur != 0) {
+							send(cur, buffer, valread, 0);
+						}
 					}
 				}
 			}
@@ -174,14 +176,10 @@ void *runServer(void *buff) {
 		char *buffer = (char *)calloc(sizeof(char), BUFF + 1);
 		int val = 0;
 		while (runningServer) {
-			if (val == 0) {
-				val = serverSendReceive(s, buffer); 
-			}
+			val = serverSendReceive(s, buffer, val); 
 			if (val != 0) {
 				if (pthread_mutex_trylock(lock) == 0) {
-					//printf("fudge %s\n", buffer);
-
-					memcpy(buff, buffer, BUFF);
+					memcpy(buff, buffer, val);
 					pthread_mutex_unlock(lock);
 
 					memset(buffer, 0, BUFF);
