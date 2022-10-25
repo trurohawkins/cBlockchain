@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
 			runningClient = true;
 			char *buffer = (char *)calloc(sizeof(char), BUFF + 1);
 			int recv = 0;
-			int count;
+			int count = 0;
 			int interval = 1000000;
 			while(runningClient) {
 				int val = receiveData(c, buffer); 

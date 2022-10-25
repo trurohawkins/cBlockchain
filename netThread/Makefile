@@ -8,7 +8,7 @@ node: main.c libNetThread.a
 libNetThread.a: node.o client.o server.o $(D)input.o $(D)threads.o
 	ar rs libNetThread.a $^
 
-node.o: node.c node.h
+node.o: node.c node.h net.c
 	$(COM) node.c
 
 input.o: $(D)input.c $(D)input.h $(D)data.c $(D)data.h

@@ -11,6 +11,8 @@ extern bool timeToStart;
 
 void startNode(char *ip);
 void runNode(void (*processData)(void*, bool), void (*welcome)(void), void (*parse)(char*,bool), char *ip);
+void *runServer(void *buff);
+void *runClient(void *buff);
 void processString(void*, bool);
 void sendInput(char *buff, bool onServer);
 void welcomeText();

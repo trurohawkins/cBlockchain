@@ -7,30 +7,32 @@ int main() {
 	memcpy(welcomeMessage, &send, welcomeSize);
 
 	s = setUpServerConnection();
-	int count = 0;
-	int interval = 1000000;
+	int max = 5;
+	int num = 0;
 	if (s > 0) {
 		bool runningServer = true;
 		//serverDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
 		char *buffer = (char *)calloc(sizeof(char), BUFF + 1);
+		int gotData = 0;
 		while (runningServer) {
-			int val = serverSendReceive(s, buffer); 
-			if (val != 0) {
+			gotData = serverSendReceive(s, buffer, gotData); 
+			if (gotData != 0) {
 				printf("received %i\n", *(int*)buffer);
+				num += *(int*)buffer;
+				if (num >= max) {
+					printf("got enough data(%i), exiting now\n", num);
+					runningServer = false;
+				}
 				//send = *(int*)buffer + 1;
 				memset(buffer, 0, BUFF);
+				gotData = 0;
 			} 
-			if (count >= interval) {
-				//serverSendAll(s, &send, sizeof(int));
-				count = 0;
-			} else {
-				count++;
-			}
 		}
 		printf("server ended\n");
 		free(buffer);
 		//free(serverDaisyBuff);
 		closeServer(s);
 	}
+	free(welcomeMessage);
 	//runServer(0);	
 }

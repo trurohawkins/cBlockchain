@@ -130,7 +130,7 @@ int serverSendReceive(Server *s, void *buffer, int gotData) {
 			}
 		}
 	}
-	if (gotData == 0) {
+	if (gotData <= 0) {
 		//else its some IO operations on some other sockets
 		for (int i = 0; i < s->maxClients; i++) {
 			sd = s->clientSocks[i];
@@ -162,34 +162,5 @@ void serverSendAll(Server *s, void *buffer, int bytes) {
 		if (cur != 0) {
 			send(cur, buffer, bytes, 0);
 		}
-	}
-}
-
-void *runServer(void *buff) {
-	pthread_t *lock = calloc(1, sizeof(pthread_mutex_t));
-	memcpy(lock, buff, sizeof(pthread_mutex_t));
-	pthread_mutex_unlock(lock);
-	s = setUpServerConnection();
-	runningServer = s > 0;
-	if (runningServer) {
-		//serverDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
-		char *buffer = (char *)calloc(sizeof(char), BUFF + 1);
-		int val = 0;
-		while (runningServer) {
-			val = serverSendReceive(s, buffer, val); 
-			if (val != 0) {
-				if (pthread_mutex_trylock(lock) == 0) {
-					memcpy(buff, buffer, val);
-					pthread_mutex_unlock(lock);
-
-					memset(buffer, 0, BUFF);
-					val = 0;
-				}
-			}
-		}
-		printf("server ended\n");
-		free(buffer);
-		free(serverDaisyBuff);
-		closeServer(s);
 	}
 }

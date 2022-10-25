@@ -26,4 +26,3 @@ extern Client *c;
 
 Client *connectAsClient(char *ip);
 int receiveData(Client *c, void *recBuff);
-void *runClient(void *ip);

@@ -35,4 +35,3 @@ void closeServer(Server *s);
 Server *setUpServerConnection();
 int serverSendReceive(Server *s, void *buffer, int gotData);
 void serverSendAll(Server *s, void *buffer, int bytes);
-void *runServer(void*);

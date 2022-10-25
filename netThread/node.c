@@ -60,9 +60,12 @@ void runNode(void (*processData)(void*, bool), void (*welcome)(void), void (*par
 		if (timeToStart && !(runningClient || runningServer)) {
 			welcome();
 			if (handles[1] == 0) {
-				handles[1] = createThread(runServer, serverDaisyBuff, PTHREAD_CREATE_DETACHED);
+				s = setUpServerConnection();
+				if (s > 0) {
+					handles[1] = createThread(runServer, serverDaisyBuff, PTHREAD_CREATE_DETACHED);
+					runningServer = true;
+				}
 			} else {
-				memset(serverDaisyBuff, 0, BUFF);
 			}
 			if (handles[2] == 0) {
 				if (ip) {
@@ -73,8 +76,10 @@ void runNode(void (*processData)(void*, bool), void (*welcome)(void), void (*par
 					}
 				}
 			} else {
-				memset(clientDaisyBuff, 0, BUFF);
 			}
+			memset(serverDaisyBuff, 0, BUFF);
+			memset(clientDaisyBuff, 0, BUFF);
+			printf("network not started yet\n");
 		} else {
 			if (pthread_mutex_trylock(lock) == 0) {
 				// buffer from input thread
@@ -118,7 +123,13 @@ void runNode(void (*processData)(void*, bool), void (*welcome)(void), void (*par
 			pthread_join(handles[i], 0);
 		}
 	}
+	free(lock);
+	free(c_lock);
+	free(s_lock);
 	free(inputBuffer);
+	free(clientDaisyBuff);
+	free(serverDaisyBuff);
+	free(welcomeMessage);
 }
 
 void sendInput(char *buff, bool onServer) {
@@ -160,3 +171,5 @@ void welcomeText() {
 	welcomeMessage = writeData(d);
 	freeData(d);
 }
+
+#include "net.c"
