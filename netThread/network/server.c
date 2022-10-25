@@ -163,18 +163,30 @@ void serverSendAll(Server *s, void *buffer, int bytes) {
 	}
 }
 
-void *runServer(void *n) {
+void *runServer(void *buff) {
+	pthread_t *lock = calloc(1, sizeof(pthread_mutex_t));
+	memcpy(lock, buff, sizeof(pthread_mutex_t));
+	pthread_mutex_unlock(lock);
 	s = setUpServerConnection();
 	runningServer = s > 0;
 	if (runningServer) {
-		serverDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
+		//serverDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
 		char *buffer = (char *)calloc(sizeof(char), BUFF + 1);
+		int val = 0;
 		while (runningServer) {
-			int val = serverSendReceive(s, buffer); 
+			if (val == 0) {
+				val = serverSendReceive(s, buffer); 
+			}
 			if (val != 0) {
-				//printf("fudge %s\n", buffer);
-				memcpy(serverDaisyBuff, buffer, BUFF);
-				memset(buffer, 0, BUFF);
+				if (pthread_mutex_trylock(lock) == 0) {
+					//printf("fudge %s\n", buffer);
+
+					memcpy(buff, buffer, BUFF);
+					pthread_mutex_unlock(lock);
+
+					memset(buffer, 0, BUFF);
+					val = 0;
+				}
 			}
 		}
 		printf("server ended\n");
@@ -182,5 +194,4 @@ void *runServer(void *n) {
 		free(serverDaisyBuff);
 		closeServer(s);
 	}
-
 }
