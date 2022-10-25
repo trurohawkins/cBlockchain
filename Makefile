@@ -1,3 +1,5 @@
+COM = gcc -Wall -w -pedantic -c -g
+
 BC = blockchain-offline/
 B = $(BC)block/
 S = $(B)sha256/
@@ -12,44 +14,38 @@ D = $(P)dataThread/
 blockchain: main.c libBlock.a libNetThread.a
 	gcc -o blockchain -g -Wall -w -pedantic main.c libNetThread.a libBlock.a -lm
 
-libNetThread.a:  networkCommand.o $(P)node.o $(D)data.o $(D)input.o $(D)keyboardFunc.o $(D)threads.o	$(N)client.o $(N)server.o
+libNetThread.a:  networkCommand.o $(P)node.o $(D)input.o $(D)threads.o	$(N)client.o $(N)server.o
 	ar rs libNetThread.a $^
 
 networkCommand.o: networkCommand.c networkCommand.h
-	gcc -c -g networkCommand.c
+	$(COM) networkCommand.c
 
-node.o: $(P)node.c $(P)node.h
-	gcc -c -g $(P)node.c
+node.o: $(P)node.c $(P)node.h $(P)net.c
+	$(MAKE) node.o $(P)
 
-$(D)data.o: $(D)data.c $(D)data.h
-	$(MAKE) data.o -C $(D)
-
-$(D)input.o: $(D)input.c $(D)input.h
+$(D)input.o: $(D)data.c $(D)data.h $(D)input.c $(D)input.h
 	$(MAKE) input.o -C $(D)
 
-keyboardFunc.o: $(D)keyboardFunc.c $(D)keyboardFunc.h
-	gcc -c -g $(D)keyboardFunc.c
-
 threads.o: $(D)threads.c $(D)threads.h
-	gcc -c -g $(D)threads.c
+	$(MAKE) threads.c $(D)
 
 client.o: $(N)client.c $(N)client.h
-	gcc -c -g $(N)client.c
+	$(COM) $(N)client.c
 
 server.o: $(N)server.c $(N)server.h
-	gcc -c -g $(N)server.c
+	$(COM) $(N)server.c
 
 libBlock.a: $(BC)transactionPool.o sha256.o $(B)block.o $(C)contactBook.o $(T)transaction.o $(T)rsa.o
 	ar rs libBlock.a $^
 
 transactionPool.o: $(BC)transactionPool.c $(BC)transactionPool.h
-	gcc -c -g $(BC)transactionPool.c
+	$(COM) $(BC)transactionPool.c
 
 block.o: $(B)block.c $(B)block.h
-	gcc -c -g $(B)block.c
+	$(COM) $(B)block.c
 
 contactBook.o:$(C)contactBook.c$(C)contactBook.h
-	gcc -c -g$(C)contactBook.c
+	$(COM)$(C)contactBook.c
 
 $(T)transaction.o: $(T)transaction.c $(T)transaction.h
 	$(MAKE) transaction.o -C $(T)
@@ -58,7 +54,13 @@ $(T)rsa.o:
 	$(MAKE) rsa.o -C $(T)
 
 sha256.o: $(S)sha256.c $(S)sha256.h
-	gcc -c -g $(S)sha256.c 
+	$(COM) $(S)sha256.c 
+
+test:
+	valgrind --fair-sched=yes --leak-check=full --show-leak-kinds=all ./blockchain
+
+test2:
+	valgrind --fair-sched=yes --leak-check=full --show-leak-kinds=all ./blockchain 127.0.0.1
 
 clean:
 	rm *.o
@@ -75,9 +77,9 @@ fclean:
 	$(MAKE) clean -C $(D)
 	rm *.a
 	rm blockchain
+	rm vg*
 	rm *.u
 	rm *.sav
-	rm vg*
 
 
 

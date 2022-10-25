@@ -1,5 +1,5 @@
 void *runClient(void *buff) {
-	pthread_t *lock = calloc(1, sizeof(pthread_mutex_t));
+	pthread_mutex_t *lock = calloc(1, sizeof(pthread_mutex_t));
 	memcpy(lock, buff, sizeof(pthread_mutex_t));
 	pthread_mutex_unlock(lock);
 	//c = connectAsClient(buff + sizeof(pthread_mutex_t));
@@ -32,7 +32,7 @@ void *runClient(void *buff) {
 }
 
 void *runServer(void *buff) {
-	pthread_t *lock = calloc(1, sizeof(pthread_mutex_t));
+	pthread_mutex_t *lock = calloc(1, sizeof(pthread_mutex_t));
 	memcpy(lock, buff, sizeof(pthread_mutex_t));
 	pthread_mutex_unlock(lock);
 	//s = setUpServerConnection();

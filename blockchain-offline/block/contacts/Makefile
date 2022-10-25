@@ -1,16 +1,17 @@
+COM = gcc -c -g -Wall -w -pedantic
 T = rsa/
 
 contactBook: main.o libContacts.a
 	gcc -o contactBook main.o libContacts.a -lm
 
 main.o: main.c
-	gcc -c -g main.c
+	$(COM) main.c
 
 libContacts.a: contactBook.o $(T)transaction.o $(T)rsa.o  
 	ar rs libContacts.a contactBook.o $(T)transaction.o $(T)rsa.o 
 
 contactBook.o: contactBook.c contactBook.h
-	gcc -c -g contactBook.c
+	$(COM) contactBook.c
 
 $(T)transaction.o: $(T)transaction.c $(T)transaction.h
 	$(MAKE) transaction.o -C $(T)

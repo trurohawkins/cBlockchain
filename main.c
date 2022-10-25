@@ -39,7 +39,6 @@ int main(int argc, char **argv) {
 	welcomeMessage = writeData(d);
 	*/
 
-	startNode(ip);
 	mainUser = loadUser("user.u");
 	if (!mainUser) {
 		timeToStart = false;
@@ -50,7 +49,6 @@ int main(int argc, char **argv) {
 		
 	}
 	runNode(processBlockCommand, welcomeToBlockchain, parseCommand, ip);
-	free(welcomeMessage);
 	freeUser(mainUser);
 	freePools();
 	freeContacts();

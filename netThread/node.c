@@ -37,27 +37,28 @@ void runNode(void (*processData)(void*, bool), void (*welcome)(void), void (*par
 	pthread_mutex_t *lock = calloc(sizeof(pthread_mutex_t), 1);
 	if (pthread_mutex_init(lock, NULL) != 0) {
 		printf("mutex initialization failed\n");
-		return 1;
+		return;
 	}
 	pthread_mutex_t *s_lock = calloc(sizeof(pthread_mutex_t), 1);
 	if (pthread_mutex_init(s_lock, NULL) != 0) {
 		printf("mutex initialization failed\n");
-		return 1;
+		return;
 	}
 	pthread_mutex_t *c_lock = calloc(sizeof(pthread_mutex_t), 1);
 	if (pthread_mutex_init(c_lock, NULL) != 0) {
 		printf("mutex initialization failed\n");
-		return 1;
+		return;
 	}
 	
-	memcpy(serverDaisyBuff, &s_lock, sizeof(pthread_mutex_t));
-	memcpy(clientDaisyBuff, &c_lock, sizeof(pthread_mutex_t));
-	memcpy(inputBuffer, &lock, sizeof(pthread_mutex_t));
+	memcpy(serverDaisyBuff, &s_lock, sizeof(pthread_mutex_t*));
+	memcpy(clientDaisyBuff, &c_lock, sizeof(pthread_mutex_t*));
+	memcpy(inputBuffer, &lock, sizeof(pthread_mutex_t*));
 
 	handles[0] = createThread(inputThread, inputBuffer, PTHREAD_CREATE_DETACHED);
 	memset(inputBuffer, 0 , BUFF);
+	bool networkStarted = false;
 	while (runningMainThread) {
-		if (timeToStart && !(runningClient || runningServer)) {
+		if (timeToStart && !networkStarted) {
 			welcome();
 			if (handles[1] == 0) {
 				s = setUpServerConnection();
@@ -79,7 +80,7 @@ void runNode(void (*processData)(void*, bool), void (*welcome)(void), void (*par
 			}
 			memset(serverDaisyBuff, 0, BUFF);
 			memset(clientDaisyBuff, 0, BUFF);
-			printf("network not started yet\n");
+			networkStarted = true;
 		} else {
 			if (pthread_mutex_trylock(lock) == 0) {
 				// buffer from input thread
@@ -110,7 +111,7 @@ void runNode(void (*processData)(void*, bool), void (*welcome)(void), void (*par
 					pthread_mutex_unlock(c_lock);
 				}
 			}
-			if (!runningClient && !runningServer) {
+			if (networkStarted && !runningClient && !runningServer) {
 				runningMainThread = false;
 			}
 		}
