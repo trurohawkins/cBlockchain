@@ -8,9 +8,8 @@ typedef struct Transaction {
 } Transaction;
 
 
-
-NUM *signTransaction(Key *sender, Key recipient, float amount);
 Transaction *makeTransaction(Key *sender, Key *recipient, float amount);
+NUM *signTransaction(Key *sender, Key recipient, float amount);
 Transaction *decryptTransaction(NUM *transaction, Key sender);
 NUM *splitBigNum(NUM *n);
 NUM combineSmallNums(NUM *n);

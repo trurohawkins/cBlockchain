@@ -8,7 +8,9 @@
 
 extern bool networkStarted;
 extern bool timeToStart;
-
+extern void *serverDaisyBuff;
+extern char *clientDaisyBuff;
+ 
 void startNode(char *ip);
 void runNode(void (*processData)(void*, bool), void (*welcome)(void), void (*parse)(char*,bool), char *ip);
 void *runServer(void *buff);

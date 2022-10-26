@@ -1,8 +1,8 @@
 #include "server.h"
+
 void *welcomeMessage;
 int welcomeSize;
-char *serverInpBuff;
-char *serverDaisyBuff;
+//char *serverInpBuff;
 bool runningServer = false;
 
 Server *s;
@@ -50,6 +50,8 @@ Server *setUpServerConnection() {
 		perror("setsockopt");
 		return 0;
 	}
+	fcntl(s->sock, F_SETFL, O_NONBLOCK);
+
 	s->addr.sin_addr.s_addr = INADDR_ANY;
 	s->addr.sin_family = AF_INET;
 	s->addr.sin_port = htons(PORT);
@@ -75,7 +77,7 @@ Server *setUpServerConnection() {
 	return s;
 }
 
-int serverSendReceive(Server *s, void *buffer, int gotData) {
+void serverSendReceive(Server *s, void *buffer, int* gotData) {
 	//printf("----server----\n");
 	int clientSock, sd, activity, valread = 0;
 	fd_set readfds, writefds;
@@ -130,7 +132,7 @@ int serverSendReceive(Server *s, void *buffer, int gotData) {
 			}
 		}
 	}
-	if (gotData <= 0) {
+	if (*gotData <= 0) {
 		//else its some IO operations on some other sockets
 		for (int i = 0; i < s->maxClients; i++) {
 			sd = s->clientSocks[i];
@@ -142,7 +144,7 @@ int serverSendReceive(Server *s, void *buffer, int gotData) {
 					printf("lost connection to socket #%d\n", i);
 				} else {
 					//printf("got data\n");
-					gotData = valread;
+					*gotData = valread;
 					for (int j = 1; j < s->maxClients; j++) {
 						int cur = s->clientSocks[(i + j) % s->maxClients];
 						if (cur != 0) {
@@ -153,7 +155,6 @@ int serverSendReceive(Server *s, void *buffer, int gotData) {
 			}
 		}
 	}
-	return gotData;
 }
 
 void serverSendAll(Server *s, void *buffer, int bytes) {

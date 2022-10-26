@@ -1,7 +1,6 @@
 #include "client.h"
 
-char *clientInpBuff;
-char *clientDaisyBuff;
+//char *clientInpBuff;
 bool runningClient = false;
 Client *c;
 

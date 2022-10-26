@@ -42,7 +42,7 @@ void *runServer(void *buff) {
 		char *buffer = (char *)calloc(sizeof(char), BUFF + 1);
 		int val = 0;
 		while (runningServer) {
-			val = serverSendReceive(s, buffer, val); 
+			serverSendReceive(s, buffer, &val); 
 			if (val > 0) {
 				if (pthread_mutex_trylock(lock) == 0) {
 					memcpy(buff, buffer, val);

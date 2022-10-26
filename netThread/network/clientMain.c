@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
 				}
 				if (count >= interval) {
 					write(c->sock, &recv, sizeof(int));
+					printf("sent %i\n", recv);
 					recv++;
 					count = 0;
 				} else {

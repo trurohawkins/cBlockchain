@@ -1,5 +1,7 @@
 #include "node.h" 
 
+void *serverDaisyBuff;
+char *clientDaisyBuff;
 bool timeToStart = false;
 
 void startNode(char *ip) {
@@ -30,8 +32,8 @@ void startNode(char *ip) {
 void runNode(void (*processData)(void*, bool), void (*welcome)(void), void (*parse)(char*, bool), char *ip) {
 	runningMainThread = true;
 	void *inputBuffer = (char*)calloc(sizeof(char), BUFF + 1);
-	serverDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
-	clientDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
+	serverDaisyBuff = calloc(sizeof(char), BUFF + 1);
+	clientDaisyBuff = calloc(sizeof(char), BUFF + 1);
 	pthread_t handles[3] = {0,0,0};
 	
 	pthread_mutex_t *lock = calloc(sizeof(pthread_mutex_t), 1);

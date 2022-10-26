@@ -15,7 +15,7 @@ int main() {
 		char *buffer = (char *)calloc(sizeof(char), BUFF + 1);
 		int gotData = 0;
 		while (runningServer) {
-			gotData = serverSendReceive(s, buffer, gotData); 
+			serverSendReceive(s, buffer, &gotData); 
 			if (gotData != 0) {
 				printf("received %i\n", *(int*)buffer);
 				num += *(int*)buffer;
@@ -23,16 +23,13 @@ int main() {
 					printf("got enough data(%i), exiting now\n", num);
 					runningServer = false;
 				}
-				//send = *(int*)buffer + 1;
 				memset(buffer, 0, BUFF);
 				gotData = 0;
 			} 
 		}
 		printf("server ended\n");
 		free(buffer);
-		//free(serverDaisyBuff);
 		closeServer(s);
 	}
 	free(welcomeMessage);
-	//runServer(0);	
 }

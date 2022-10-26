@@ -2,6 +2,11 @@
 #include "data.h"
 
 int main() {
+	if (littleEndian()) {
+		printf("little endian\n");
+	} else {
+		printf("big endian\n");
+	}
 	int *poo = (int*)calloc(1, sizeof(int));
 	*poo = 10;
 	Data *d = makeData(poo, sizeof(int));

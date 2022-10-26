@@ -14,15 +14,16 @@
 #define MAXCLIENTS 10
 #define BUFF 1024
 
-extern char *clientInpBuff;
-extern char *clientDaisyBuff;
-extern bool runningClient;
+//extern char *clientInpBuff;
+//extern char *clientDaisyBuff;
 
 typedef struct Client {
 	int sock;
 	struct timeval tv;
 } Client;
+
 extern Client *c;
+extern bool runningClient;
 
 Client *connectAsClient(char *ip);
 int receiveData(Client *c, void *recBuff);

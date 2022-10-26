@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <sys/types.h>
+#include <fcntl.h>
 
 #define PORT 6969
 #define MAXCLIENTS 10
@@ -24,14 +25,14 @@ typedef struct Server {
 
 extern void *welcomeMessage;
 extern int welcomeSize;
-extern char *serverInpBuff;
-extern char *serverDaisyBuff;
+//extern char *serverInpBuff;
 extern bool runningServer;
 extern Server *s;
 
 Server *makeServer(int maxClients);
 void freeServer(Server *s);
 void closeServer(Server *s);
+
 Server *setUpServerConnection();
-int serverSendReceive(Server *s, void *buffer, int gotData);
+void serverSendReceive(Server *s, void *buffer, int* gotData);
 void serverSendAll(Server *s, void *buffer, int bytes);
