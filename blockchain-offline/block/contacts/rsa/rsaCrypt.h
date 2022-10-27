@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "prime.h"
+#include "../../../../netThread/dataThread/data.h"
 
 typedef struct Key {
 	NUM n;
