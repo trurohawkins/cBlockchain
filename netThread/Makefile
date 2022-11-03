@@ -5,17 +5,14 @@ COM = gcc -c -g -Wall -pedantic -w
 node: main.c libNetThread.a
 	gcc -o node -g -Wall -w -pedantic main.c libNetThread.a
 
-libNetThread.a: node.o client.o server.o $(D)input.o $(D)threads.o
+libNetThread.a: node.o client.o server.o $(D)inputThread.o
 	ar rs libNetThread.a $^
 
 node.o: node.c node.h net.c
 	$(COM) node.c
 
-input.o: $(D)input.c $(D)input.h $(D)data.c $(D)data.h
-	$(MAKE) input.o $(D)
-
-threads.o: $(D)threads.c $(D)threads.h
-	$(MAKE) threads.o $(D)
+inputThread.o: $(D)input.c $(D)input.h $(D)data.c $(D)data.h $(D)inputThread.c $(D)inputThread.h
+	$(MAKE) inputThread.o $(D)
 
 client.o: $(N)client.c $(N)client.h
 	$(COM) $(N)client.c
@@ -23,7 +20,7 @@ client.o: $(N)client.c $(N)client.h
 server.o: $(N)server.c $(N)server.h
 	$(COM) $(N)server.c
 
-test:
+test1:
 	valgrind --fair-sched=yes --leak-check=full --show-leak-kinds=all ./node
 
 test2:
@@ -35,8 +32,8 @@ clean:
 fclean:
 	rm *.o
 	rm *.a
+	rm node
 	$(MAKE) clean -C $(D)
 	$(MAKE) clean -C $(N)
-	rm node
 	rm vg*
 

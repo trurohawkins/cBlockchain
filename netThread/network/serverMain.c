@@ -11,12 +11,11 @@ int main() {
 	int num = 0;
 	if (s > 0) {
 		bool runningServer = true;
-		//serverDaisyBuff = (char*)calloc(sizeof(char), BUFF + 1);
 		char *buffer = (char *)calloc(sizeof(char), BUFF + 1);
-		int gotData = 0;
+		int gotData;
 		while (runningServer) {
 			serverSendReceive(s, buffer, &gotData); 
-			if (gotData != 0) {
+			if (gotData > 0) {
 				printf("received %i\n", *(int*)buffer);
 				num += *(int*)buffer;
 				if (num >= max) {
@@ -25,7 +24,9 @@ int main() {
 				}
 				memset(buffer, 0, BUFF);
 				gotData = 0;
-			} 
+			} else if (gotData < 0) {
+				break;
+			}
 		}
 		printf("server ended\n");
 		free(buffer);

@@ -1,11 +1,13 @@
 #ifndef DATA
 #define DATA
+#include <arpa/inet.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef struct Data {
-	int byteSize;
+	int bytes;
 	void *arr;
 } Data;
 

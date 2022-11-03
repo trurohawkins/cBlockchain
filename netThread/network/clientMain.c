@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
 	} else {
 		c = connectAsClient(argv[1]);
 		if (c > 0) {
-			runningClient = true;
+			bool runningClient = true;
 			char *buffer = (char *)calloc(sizeof(char), BUFF + 1);
 			int recv = 0;
 			int count = 0;
@@ -22,7 +22,6 @@ int main(int argc, char **argv) {
 				}
 				if (count >= interval) {
 					write(c->sock, &recv, sizeof(int));
-					printf("sent %i\n", recv);
 					recv++;
 					count = 0;
 				} else {
@@ -34,5 +33,4 @@ int main(int argc, char **argv) {
 			free(c);
 		}
 	}
-		//runClient(argv[1]);
 }

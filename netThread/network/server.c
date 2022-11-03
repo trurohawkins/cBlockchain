@@ -11,7 +11,7 @@ Server *makeServer(int maxClients) {
 	Server *s = (Server *)calloc(sizeof(Server), 1);
 	s->maxClients = maxClients;
 	s->clientSocks = (int*)calloc(sizeof(int), maxClients);
-	s->tv.tv_sec = 1;
+	s->tv.tv_sec = 0;
 	s->tv.tv_usec = 0;
 	return s;
 }

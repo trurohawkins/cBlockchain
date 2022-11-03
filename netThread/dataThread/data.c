@@ -1,5 +1,3 @@
-#include "data.h"
-
 bool littleEndian() {
 	unsigned int i = 1;
 	char *c = (char*)&i;
@@ -12,21 +10,22 @@ bool littleEndian() {
 
 Data *makeData(void *arr, int bytes) {
 	Data *d = (Data*)calloc(1, sizeof(Data));
-	d->arr = arr;
-	d->byteSize = bytes;
+	d->arr = calloc(1, bytes);
+	memcpy(d->arr, arr, bytes);
+	d->bytes = bytes;
 	return d;
 }
 
 void *writeData(Data *d) {
-	void *buff = calloc(1, d->byteSize + sizeof(int));
-	int size = htonl(d->byteSize);
+	void *buff = calloc(1, d->bytes + sizeof(int));
+	int size = htonl(d->bytes);
 	memcpy(buff, &size, sizeof(int));
 	void *bu = d->arr;;
 	if (littleEndian()) {
-		bu = flipEndian(d->arr, d->byteSize);
+		bu = flipEndian(d->arr, d->bytes);
 	}
-	//memcpy(buff, &d->byteSize, sizeof(int));
-	memcpy(buff + sizeof(int), bu, d->byteSize);
+	//memcpy(buff, &d->bytes, sizeof(int));
+	memcpy(buff + sizeof(int), bu, d->bytes);
 	if (littleEndian()) {
 		free(bu);
 	}
@@ -53,9 +52,9 @@ Data *readData(void *buffer) {
 	}
 	if (size < BUFF - sizeof(int) && size > 0) {
 		Data *d = (Data*)calloc(1, sizeof(Data));
-		d->byteSize = size;
-		d->arr = calloc(1, d->byteSize);
-		memcpy(d->arr, buffer + sizeof(int), d->byteSize);
+		d->bytes = size;
+		d->arr = calloc(1, d->bytes);
+		memcpy(d->arr, buffer + sizeof(int), d->bytes);
 		if (littleEndian()) {
 			void *bu = flipEndian(d->arr, size);
 			free(d->arr);

@@ -1,5 +1,4 @@
 #include "input.h"
-#include "data.c"
 bool runningMainThread = true;
 
 void nonblock(int state) {
@@ -67,40 +66,3 @@ int getInput(char *buffer, int letterCount) {
 	nonblock(0);
 	return letterCount;
 }
-
-void *inputThread(void *buffer) {
-	pthread_mutex_t *lock = calloc(1, sizeof(pthread_mutex_t));
-	memcpy(lock, buffer, sizeof(pthread_mutex_t*));
-	pthread_mutex_unlock(lock);
-
-	char *inpBuffer = (char*)calloc(sizeof(char), BUFF + 1);
-	int letterCount = 0;
-	while(runningMainThread) {
-		letterCount = getInput(inpBuffer, letterCount);
-		if (letterCount == -1) {
-			if (pthread_mutex_trylock(lock) == 0) {
-				letterCount = 0;
-				int len = strlen(inpBuffer) + 1;
-				Data *d = makeData(inpBuffer, len);
-				void *buff = writeData(d);
-				memcpy(buffer, buff, len + sizeof(int));
-				pthread_mutex_unlock(lock);
-				
-				memset(inpBuffer, 0, BUFF);
-				free(buff);
-				free(d);
-			} else {
-				printf("cannot lock mutex - input\n");
-			}
-			//pthread_mutex_unlock(lock);
-		} else if (letterCount == -2) {
-			runningMainThread = false;
-			memset(inpBuffer, 0, BUFF);
-		}
-	}
-	free(lock);
-	free(inpBuffer);
-	pthread_exit(0);
-}
-
-
